@@ -4,7 +4,7 @@
 # Start
 Double click start.bat or main.py<br>
 Fill up settings<br>
-Wait and till it is Done!
+Wait till it's Done!
 
 Accounts saved in accounts.txt
 
