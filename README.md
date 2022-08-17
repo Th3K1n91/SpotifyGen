@@ -17,3 +17,10 @@ _How many accounts should be generated_: **200**<br>
 _Password for all accounts_: **StrongPassword11**<br>
 _Threads_: **50**<br>
 
+# WIP
+- Proxy Support (In Testing)<br>
+- Email verification with my xitroo api<br>
+- Account Country
+
+WIP for small enhancements:<br>
+json for custom name, birthday
