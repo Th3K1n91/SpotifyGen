@@ -1,6 +1,5 @@
-# 1.1.0
-import threading, concurrent.futures, time, requests, json, random, string, sys, os
-from itertools import repeat
+# 1.1.1
+import threading, time, requests, json, random, string, sys, os, queue
 from PyQt5 import QtWidgets, QtGui, uic
 
 class Ui(QtWidgets.QDialog):
@@ -25,20 +24,19 @@ class Ui(QtWidgets.QDialog):
         if self.count.text() and self.password.text() and self.threads.text() != "":
             if len(self.password.text()) >= 8:
                 print("Please Wait")
-                acc = int(self.count.text())
-                passw = str(self.password.text())
-                thr = int(self.threads.text())
-                accs = list()
-                for i in range(acc): accs.append("".join(random.choice(string.ascii_letters) for _ in range(random.randint(8,14))) + "@xitroo.de")
-                with concurrent.futures.ProcessPoolExecutor(max_workers=int(thr)) as executor: executor.map(creator, accs, repeat(passw))
-
-
+                for i in range(int(self.count.text())): q.put("".join(random.choice(string.ascii_letters) for _ in range(random.randint(8,14))) + "@xitroo.de")
+                while True:
+                    for i in range(int(self.threads.text())):
+                        t = threading.Thread(target=creator(email=q.get(), passw=self.password.text()).create, args=())
+                        threads.append(t)
+                        t.start()
+                    if q.empty() == True: break
+                    for t in threads: t.join()
 
 class creator:
-    def __init__(self, email, passw):
+    def __init__(self, email: str, passw: str):
         self.email = email
         self.passw = passw
-        self.create()
 
     def create(self):
         header = {
@@ -91,6 +89,9 @@ class creator:
 
 
 if __name__ == "__main__":
+    # Vars
+    q = queue.Queue()
+    threads = list()
     # Start App
     app = QtWidgets.QApplication(sys.argv)
     window = Ui()

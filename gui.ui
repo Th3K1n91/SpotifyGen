@@ -254,7 +254,7 @@ QPushButton:pressed {
     </rect>
    </property>
    <property name="text">
-    <string> V1.1.0</string>
+    <string> V1.1.1</string>
    </property>
   </widget>
   <widget class="QLabel" name="Github">
