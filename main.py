@@ -1,12 +1,37 @@
-import threading
-import concurrent.futures
-import time
-
-import requests
-import json
-import random
-import string
+# 1.1.0
+import threading, concurrent.futures, time, requests, json, random, string, sys, os
 from itertools import repeat
+from PyQt5 import QtWidgets, QtGui, uic
+
+class Ui(QtWidgets.QDialog):
+    def __init__(self):
+        super(Ui, self).__init__()
+        uic.loadUi('gui.ui', self)
+        self.setWindowIcon(QtGui.QIcon('images/logo.png'))
+        self.show()
+        self.Image.setPixmap(QtGui.QPixmap("images/logo.png"))
+        self.start.clicked.connect(self.st)
+        self.Name.mousePressEvent = self.pr
+        self.Image.mousePressEvent = self.pr
+        self.Github.mousePressEvent = self.gt
+
+    def gt(self, event):
+        os.system("start https://github.com/Th3K1n91/SpotifyGen")
+
+    def pr(self, event):
+        os.system("start https://cracked.io/insuckablyat88")
+
+    def st(self):
+        if self.count.text() and self.password.text() and self.threads.text() != "":
+            if len(self.password.text()) >= 8:
+                print("Please Wait")
+                acc = int(self.count.text())
+                passw = str(self.password.text())
+                thr = int(self.threads.text())
+                accs = list()
+                for i in range(acc): accs.append("".join(random.choice(string.ascii_letters) for _ in range(random.randint(8,14))) + "@xitroo.de")
+                with concurrent.futures.ProcessPoolExecutor(max_workers=int(thr)) as executor: executor.map(creator, accs, repeat(passw))
+
 
 
 class creator:
@@ -24,7 +49,6 @@ class creator:
         sourcs = requests.get("https://www.spotify.com/de/signup", headers=header).text
         i_id = sourcs.split('spT":"')[1].split('"')[0]
         api_key = sourcs.split('"signupServiceAppKey":"')[1].split('"')[0]
-
         payload = {
             "account_details": {
                 "birthdate": "2000-09-12",
@@ -56,25 +80,18 @@ class creator:
                 "referrer": ""
             }
         }
-        for i in range(2):
-            creat = requests.post("https://spclient.wg.spotify.com/signup/public/v2/account/create", data=json.dumps(payload), headers=header)
-            if creat.status_code == 200:
-                with threading.Lock():
-                    print(f"{self.email}\tSUCCESS")
-                    open("Accounts.txt", "a").write(f'{self.email}:{self.passw}\n')
-                break
-            else:
-                print(f"{self.email}\tERROR\t{creat.status_code}")
-                time.sleep(5)
+        creat = requests.post("https://spclient.wg.spotify.com/signup/public/v2/account/create", data=json.dumps(payload), headers=header)
+        if creat.status_code == 200:
+            with threading.Lock():
+                print(f"{self.email}\tSUCCESS")
+                open("Accounts.txt", "a").write(f'{self.email}:{self.passw}\n')
+        else:
+            print(f"{self.email}\tERROR\t{creat.status_code}")
+            time.sleep(5)
 
 
 if __name__ == "__main__":
-    print("\n// Best Results with VPN\n// Email inbox is https://xitroo.de/#[In here the email]\n")
-    acc = int(input("How many accounts should be generated: "))
-    passw = str(input("Password for all accounts: "))
-    thr = int(input("Threads: "))
-    accs = list()
-    for i in range(acc):
-        accs.append("".join(random.choice(string.ascii_letters) for a in range(random.randrange(6, 12, 1))) + "@xitroo.de")
-    with concurrent.futures.ProcessPoolExecutor(max_workers=int(thr)) as executor:
-        results = executor.map(creator, accs, repeat(passw))
+    # Start App
+    app = QtWidgets.QApplication(sys.argv)
+    window = Ui()
+    app.exec_()
